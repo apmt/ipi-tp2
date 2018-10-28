@@ -45,18 +45,6 @@ for i in range (1, img.height-1):
 		lista.sort()
 		CB[i, j]=lista[4]
 print -2
-############################
-###################################################
-import pylab
-CR_aux = np.fft.fft2(CR)
-CR_shift = np.fft.fftshift(CR_aux)
-#pylab.imshow(np.abs(ftimage))
-#pylab.show()
-gmask = np.zeros((img.height, img.width), dtype=int)
-gmask[img.height/2, img.width/2]=1
-CR = np.fft.ifft2(CR_shift * gmask)
-
-################################
 for i in range (0, img.height):
 	for j in range (0, img.width):
 		r=Y[i, j]+int(1.402*CR[i, j])
@@ -64,4 +52,4 @@ for i in range (0, img.height):
 		b=Y[i, j]+int(1.772*CB[i, j])
 		img.putpixel((j, i), (r, g, b))
 img.show()
-img.save('out.bmp')
+		
