@@ -30,25 +30,35 @@ for i in range (0, tmp.height):
 		Temp_CB[i, j] = (KCB*(b-Y[i, j]))/1000
 		Temp_CR[i, j] = (KCR*(r-Y[i, j]))/1000
 Corr=[]
-for i in range (0, img.height-tmp.height+1, 3):
+for i in range (0, img.height-tmp.height+1, 5):
 	print i
-	for j in range (0, img.width-tmp.width+1, 3):
+	for j in range (0, img.width-tmp.width+1, 5):
 		Correlation = 0
+		Soma_img = 0
+		Soma_tmp = 0
 		Soma_quadrados_img = 0.0
 		Soma_quadrados_Temp = 0.0
-		for p in range (i, i+tmp.height, 3):
-			for q in range (j, j+tmp.width, 3):
-				Correlation+=Y[p, q]*Temp_Y[p-i, q-j]
-				Soma_quadrados_img += Y[p, q]**2
-				Soma_quadrados_Temp += Temp_Y[p-i, q-j]**2
+		Contador = 0
+		for p in range (i, i+tmp.height, 5):
+			for q in range (j, j+tmp.width, 5):
+				Soma_img += CR[p, q]
+				Soma_tmp += Temp_CR[p-i, q-j]
+				Contador +=1
+		Media_img = Soma_img / Contador
+		Media_tmp = Soma_tmp / Contador
+		for p in range (i, i+tmp.height, 5):
+			for q in range (j, j+tmp.width, 5):
+				Correlation+=(CR[p, q]-Media_img)*(Temp_CR[p-i, q-j]-Media_tmp)
+				Soma_quadrados_img += (CR[p, q]-Media_img)**2
+				Soma_quadrados_Temp += (Temp_CR[p-i, q-j]-Media_tmp)**2
 		Normalized_Correlation = float(Correlation) 
 		Normalized_Correlation /= math.sqrt(Soma_quadrados_img*Soma_quadrados_Temp)
-		#print Correlation, Normalized_Correlation
-		if(Normalized_Correlation>0.8):
+		print Correlation, Normalized_Correlation
+		if(Normalized_Correlation>0.2):
 			img_aux.putpixel((j+(tmp.width/2), i+(tmp.height/2)), (0,0,255))
 		if(Normalized_Correlation>0.85):
 			img_aux.putpixel((j+(tmp.width/2), i+(tmp.height/2)), (0,255,0))
-		if(Normalized_Correlation>0.90):
+		if(Normalized_Correlation>0.3):
 			for m in range (i-5, i+6):
 				for n in range (i-5, i+6):
 					img_aux.putpixel((n+(tmp.width/2), m+(tmp.height/2)), (255,0,0))
